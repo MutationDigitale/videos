@@ -12,6 +12,7 @@ use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\helpers\Db;
 use craft\helpers\StringHelper;
+use dukt\videos\models\VideoGqlType;
 use dukt\videos\web\assets\videofield\VideoFieldAsset;
 use dukt\videos\Plugin as Videos;
 
@@ -144,5 +145,13 @@ class Video extends Field
         $searchKeywords = StringHelper::toString($keywords, ' ');
 
         return StringHelper::encodeMb4($searchKeywords);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getContentGqlType()
+    {
+        return VideoGqlType::getType();
     }
 }
