@@ -10,15 +10,18 @@ namespace dukt\videos;
 use Craft;
 use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterGqlTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Fields;
+use craft\services\Gql;
 use craft\utilities\ClearCaches;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use dukt\videos\base\PluginTrait;
 use dukt\videos\fields\Video as VideoField;
 use dukt\videos\models\Settings;
+use dukt\videos\models\VideoGqlType;
 use dukt\videos\web\twig\variables\VideosVariable;
 use yii\base\Event;
 
@@ -64,6 +67,7 @@ class Plugin extends \craft\base\Plugin
         $this->_registerFieldTypes();
         $this->_registerCacheOptions();
         $this->_registerVariable();
+        $this->_registerGraphql();
     }
 
     /**
@@ -201,4 +205,14 @@ class Plugin extends \craft\base\Plugin
         });
     }
 
+    private function _registerGraphql()
+    {
+        Event::on(
+            Gql::class,
+            Gql::EVENT_REGISTER_GQL_TYPES,
+            function (RegisterGqlTypesEvent $event) {
+                $event->types[] = VideoGqlType::class;
+            }
+        );
+    }
 }
